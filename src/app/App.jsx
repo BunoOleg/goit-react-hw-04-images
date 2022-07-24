@@ -35,14 +35,8 @@ export default function App() {
           ? setEndPage(data.totalHits / 12)
           : setEndPage(Math.floor(data.totalHits / 12) + 1)
         }
-      )        
-    }
-  , [imagesName]);
-
-
-
-  useEffect(
-    () => {
+      )    
+      
       if (isPanding) 
       { 
         fetchImages({imagesName, currentPage})
@@ -54,7 +48,11 @@ export default function App() {
         .finally(() => setIsPanding(false));
       }   
     }
-  , [currentPage, imagesName, isPanding]);  
+  , [currentPage, imagesName, isPanding]);
+
+
+
+  
       
   const handleFormSubmit = (imageName) => {
     setImagesName(imageName);
