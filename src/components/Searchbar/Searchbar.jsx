@@ -1,28 +1,33 @@
-import {useState} from 'react';
+import React, {Component} from 'react';
 import { ReactComponent as IconSearch } from '../../icons/search-icon.svg';
 import { toast } from 'react-toastify';
 
 
 import styles from './Searchbar.module.css';
 
-export default function Searchbar({handleFormSubmit}) {
+export default class Searchbar extends Component {
+  state = {
+    imagesName: '',
+  }
 
-  const [imagesName, setImagesName] = useState('');
+  handlerInput = e => {
+    this.setState({ imagesName: e.currentTarget.value.toLowerCase().trim() });
+  }
 
-  const handlerSubmit = e => {
+  handlerSubmit = e => {
     e.preventDefault(e);
-    if (e.target[1].value === '') {
+    if (this.state.imagesName === '') {
       toast.error('Input name of image');
       return;
     }
-    handleFormSubmit(imagesName);
+    this.props.handleFormSubmit(this.state.imagesName);
     e.target[1].value = '';
   }
 
-  
+  render() {
     return (
       <header className={styles.Searchbar}>
-        <form className={styles.SearchForm} onSubmit={handlerSubmit}>
+        <form className={styles.SearchForm} onSubmit={this.handlerSubmit}>
           <button type="submit" className={styles.SearchFormButton}>
            <IconSearch className={styles.Icon} />
             <span className={styles.SearchFormButtonLabel}>Search</span>
@@ -34,10 +39,11 @@ export default function Searchbar({handleFormSubmit}) {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-           onChange={(e) => setImagesName(e.currentTarget.value.toLowerCase().trim())}
+            onChange={this.handlerInput}
           />
         </form>
       </header>
     )
   }
 
+}

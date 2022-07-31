@@ -11,8 +11,6 @@ import Modal from '../components/Modal';
 import Button from '../components/Button';
 import Loader from '../components/Loader';
 
-
-
 export default function App() {
 
   const [imagesName, setImagesName] = useState('');
@@ -23,20 +21,8 @@ export default function App() {
   const [modalImg, setModalImage] = useState('');
   const [modalTags, setModalTags] = useState('');
 
-
-  const [endPage, setEndPage] = useState(1);
-
   useEffect(
     () => {
-      setEndPage(1);
-      fetchImages({imagesName})
-      .then(data => 
-        { (data.totalHits % 12) === 0
-          ? setEndPage(data.totalHits / 12)
-          : setEndPage(Math.floor(data.totalHits / 12) + 1)
-        }
-      )    
-      
       if (isPanding) 
       { 
         fetchImages({imagesName, currentPage})
@@ -48,11 +34,7 @@ export default function App() {
         .finally(() => setIsPanding(false));
       }   
     }
-  , [currentPage, imagesName, isPanding]);
-
-
-
-  
+  , [currentPage, imagesName, isPanding]);  
       
   const handleFormSubmit = (imageName) => {
     setImagesName(imageName);
@@ -72,29 +54,27 @@ export default function App() {
     setIsPanding(!isPanding);
   };
 
+    return (
+      <>
+        <Searchbar handleFormSubmit={handleFormSubmit} />
 
-  console.log(endPage, currentPage);
-  return (
-    <>
-      <Searchbar handleFormSubmit={handleFormSubmit} />      <ImageGallery 
-        currentItems = {currentItems} 
-        handleTogleModal = {handleTogleModal}
-      />
-
-      {(endPage > currentPage && currentItems.length > 0)  && 
-        <Button 
-          handleLoadMore = {handleLoadMore}
+        <ImageGallery
+          currentItems={currentItems}
+          handleTogleModal={handleTogleModal}
+        />
+        {currentItems.length >= 12 &&
+          <Button
+            handleLoadMore={handleLoadMore}
+          />}
+        {isModalOpen && <Modal
+          modalImg={modalImg}
+          modalTags={modalTags}
+          handleTogleModal={handleTogleModal}
         />}
-
-      {isModalOpen && <Modal 
-        modalImg = {modalImg}
-        modalTags = {modalTags}
-        handleTogleModal = {handleTogleModal}
-      />}
-      <ToastContainer theme= "dark"
-                      autoClose={2000}
-      />
-      {isPanding && <Loader />}
-    </>  
-  ) 
-}
+        <ToastContainer theme="dark"
+          autoClose={2000}
+        />
+        {isPanding && <Loader />}
+      </>
+    )
+  }

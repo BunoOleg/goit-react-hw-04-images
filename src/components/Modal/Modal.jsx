@@ -1,20 +1,24 @@
-import {useEffect} from 'react';
+import React, {Component} from 'react';
 
 
 import styles from './Modal.module.css';
 
-export default function Modal({modalImg, modalTags, handleTogleModal}) {
-
-  const onCloseModuleByESC = (e) => {if (e.keyCode === 27) handleTogleModal('','')};
- 
-  useEffect(() => {
-      window.addEventListener('keydown', onCloseModuleByESC);
-      return () => {window.removeEventListener('keydown', onCloseModuleByESC)}
-    }
-  )
-
+class Modal extends Component {
   
-    
+  componentDidMount() {
+    window.addEventListener('keydown', this.onCloseModuleByESC)
+  }
+ 
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.onCloseModuleByESC)
+  }
+
+  onCloseModuleByESC = (e) => {
+    if (e.keyCode === 27) this.props.handleTogleModal('','')
+  }
+
+  render () {
+    const {modalImg, modalTags, handleTogleModal} = this.props;
     return (
 
       <div className={styles.Overlay} 
@@ -27,4 +31,6 @@ export default function Modal({modalImg, modalTags, handleTogleModal}) {
       </div>
     )
   }
+}
 
+export default Modal;
